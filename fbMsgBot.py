@@ -27,11 +27,24 @@ for searchedUser in searchedUserList:
 
     # Confirm User 
     if(input("Correct User? (Y/N): ").lower() == "y"):
-        # Send message loop, send nothing to exit and logout
+
+        # Send an opener (image)
+        clientBarry.sendLocalImage(
+            "C:/Users/JerryX/Pictures/jazz.png", 
+            message = Message(text="SALUTATIONS 👋"),
+            thread_id = searchedUser.uid,
+            thread_type= ThreadType.USER
+        )
+
+        # Send-message loop, send nothing to exit and logout
         while True:
             msg = input("Send message: ")
             if msg:
-                clientBarry.send(Message(text=msg), thread_id=searchedUser.uid, thread_type = ThreadType.USER)
+                clientBarry.send(
+                    Message(text=msg),
+                    thread_id=searchedUser.uid,
+                    thread_type = ThreadType.USER
+                )
             else:
                 break
     break
