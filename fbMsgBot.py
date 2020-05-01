@@ -1,22 +1,35 @@
 from fbchat import Client, log
 from fbchat.models import *
+ 
 
-
-
-# Subclass fbchat.Client and override required methods
+# Subclass of Client()
+# Override __init__ and onMessage() method
+# Add new webscrapping method getBeeMovieScript
+cli = Client
 class ResponseBot(Client):
+    
+    def __init__(self, userEmail, userPwd ):
+        self.flagScriptTrigger = False
+        super().__init__(userEmail, userPwd, max_tries = 1) # More research needed into init overloading for subclasses
+                                                            # Error encountered when specifying parameter names (multiple instaces)
+                                                            # No 'self' is passed thru to parent Client()
+
+    def getBeeMovieScript(self):
+        print("Scrape here")
+
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
         self.markAsRead(thread_id)
 
         log.info("{} from {} in {}".format(message_object, thread_id, thread_type.name))
 
-        # If you're not the author, echo
+        # Reponse to incoming message
         if author_id != self.uid:
-            if message_object.text.lower() == "bye":
+            if message_object.text.lower() == "bye": # Exit Condition
                 self.send(Message(text = "Goodbye 👋"), thread_id=thread_id, thread_type=thread_type)
                 self.logout()
-            else:
+            elif self.flagScriptTrigger == False: # One time trigger 
+                self.flagScriptTrigger = True
                 self.send(Message(text="This is an automated response."), thread_id=thread_id, thread_type=thread_type)
 
 
@@ -33,7 +46,7 @@ print("Email: ", userEmail)
 print("Password: ",userPwd)
 
 # Attempt login
-clientBarry = ResponseBot(userEmail, userPwd, max_tries = 1) # instance of Client subclass
+clientBarry = ResponseBot(userEmail, userPwd) # instantiate of Client subclass
 print(clientBarry.getSession())
 
 # Search for user
