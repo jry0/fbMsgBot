@@ -13,11 +13,11 @@ class ResponseBot(Client):
 
         # If you're not the author, echo
         if author_id != self.uid:
-            # if message_object == "bye":
-            #     self.send("Goodbye 👋", thread_id=thread_id, thread_type=thread_type)
-            #     self.logout()
-            # else:
-            self.send(Message(text="This is an automated response."), thread_id=thread_id, thread_type=thread_type)
+            if message_object.text.lower() == "bye":
+                self.send(Message(text = "Goodbye 👋"), thread_id=thread_id, thread_type=thread_type)
+                self.logout()
+            else:
+                self.send(Message(text="This is an automated response."), thread_id=thread_id, thread_type=thread_type)
 
 
 
