@@ -1,5 +1,6 @@
 from fbchat import Client
 from fbchat.models import *
+
 #from getpass import getpass
 # Get login credentials from file
 fileLogin = open("C:/Users/JerryX/Desktop/fbChatLogin.txt", "r")
@@ -16,6 +17,8 @@ print(clientBarry.getSession())
 # Search for user
 searchName = input("Input name to search: ")
 searchedUserList = clientBarry.searchForUsers(searchName, limit = 5)
+
+
 for searchedUser in searchedUserList:
     # Print User Info
     print("ID: ", searchedUser.uid)
@@ -24,9 +27,14 @@ for searchedUser in searchedUserList:
 
     # Confirm User 
     if(input("Correct User? (Y/N): ").lower() == "y"):
-        clientBarry.send(Message(text="test"), thread_id=searchedUser.uid, thread_type = ThreadType.USER)
-        break
-
+        # Send message loop, send nothing to exit and logout
+        while True:
+            msg = input("Send message: ")
+            if msg:
+                clientBarry.send(Message(text=msg), thread_id=searchedUser.uid, thread_type = ThreadType.USER)
+            else:
+                break
+    break
 # Logout
 try:
     clientBarry.logout()
