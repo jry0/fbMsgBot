@@ -1,7 +1,29 @@
-from fbchat import Client
+from fbchat import Client, log
 from fbchat.models import *
 
-#from getpass import getpass
+
+
+# Subclass fbchat.Client and override required methods
+class ResponseBot(Client):
+    def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
+        self.markAsDelivered(thread_id, message_object.uid)
+        self.markAsRead(thread_id)
+
+        log.info("{} from {} in {}".format(message_object, thread_id, thread_type.name))
+
+        # If you're not the author, echo
+        if author_id != self.uid:
+            # if message_object == "bye":
+            #     self.send("Goodbye 👋", thread_id=thread_id, thread_type=thread_type)
+            #     self.logout()
+            # else:
+            self.send(Message(text="This is an automated response."), thread_id=thread_id, thread_type=thread_type)
+
+
+
+
+
+
 # Get login credentials from file
 fileLogin = open("C:/Users/JerryX/Desktop/fbChatLogin.txt", "r")
 userEmail = str(fileLogin.readline())
@@ -11,7 +33,7 @@ print("Email: ", userEmail)
 print("Password: ",userPwd)
 
 # Attempt login
-clientBarry = Client(userEmail, userPwd, max_tries = 1)
+clientBarry = ResponseBot(userEmail, userPwd, max_tries = 1) # instance of Client subclass
 print(clientBarry.getSession())
 
 # Search for user
@@ -27,7 +49,7 @@ for searchedUser in searchedUserList:
 
     # Confirm User 
     if(input("Correct User? (Y/N): ").lower() == "y"):
-
+        
         # Send an opener (image)
         clientBarry.sendLocalImage(
             "C:/Users/JerryX/Pictures/jazz.png", 
@@ -36,18 +58,22 @@ for searchedUser in searchedUserList:
             thread_type= ThreadType.USER
         )
 
-        # Send-message loop, send nothing to exit and logout
-        while True:
-            msg = input("Send message: ")
-            if msg:
-                clientBarry.send(
-                    Message(text=msg),
-                    thread_id=searchedUser.uid,
-                    thread_type = ThreadType.USER
-                )
-            else:
-                break
-    break
+        # Listen for inbound? message
+        clientBarry.listen()
+
+        # # Send-message loop, send nothing to exit and logout
+        # while True:
+        #     msg = input("Send message: ")
+        #     if msg:
+        #         clientBarry.send(
+        #             Message(text=msg),
+        #             thread_id=searchedUser.uid,
+        #             thread_type = ThreadType.USER
+        #         )
+        #     else:
+        #         break
+
+        break 
 # Logout
 try:
     clientBarry.logout()
