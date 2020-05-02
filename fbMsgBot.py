@@ -27,10 +27,11 @@ class ResponseBot(Client):
         if author_id != self.uid:
             if message_object.text.lower() == "bye": # Exit Condition
                 self.send(Message(text = "Goodbye 👋"), thread_id=thread_id, thread_type=thread_type)
-                self.logout()
+                self.logout() # Brute force logout, Client keeps trying to reconnect
             elif self.flagScriptTrigger == False: # One time trigger 
                 self.flagScriptTrigger = True
-                self.send(Message(text="This is an automated response."), thread_id=thread_id, thread_type=thread_type)
+                for i in range(10):
+                    self.send(Message(text="This is an automated response: {}.".format(i)), thread_id=thread_id, thread_type=thread_type)
 
 
 
@@ -88,8 +89,8 @@ for searchedUser in searchedUserList:
 
         break 
 # Logout
-try:
-    clientBarry.logout()
-    print("User logged out.")
-except:
-    print("Error logging out.")
+# try:
+#     clientBarry.logout()
+#     print("User logged out.")
+# except:
+#     print("Error logging out.")
