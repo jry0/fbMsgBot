@@ -1,2 +1,2 @@
 # fbMsgBot
-Novel chat bot that scrapes websources to output messages through FB Messenger. Built using fbchat API and python.
+Novel chat bot that scrapes websources using BeautifulSoup to output messages through FB Messenger. Built with fbchat API and python.

@@ -1,5 +1,5 @@
 from fbchat import Client, log
-from fbchat.models import *
+from fbchat.models import Message, ThreadType
  
 
 # Subclass of Client()
