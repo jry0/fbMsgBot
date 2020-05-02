@@ -1,6 +1,7 @@
 from fbchat import Client, log
 from fbchat.models import Message, ThreadType
- 
+from scriptScraper import getBeeMovieScript
+
 
 # Subclass of Client()
 # Override __init__ and onMessage() method
@@ -14,9 +15,6 @@ class ResponseBot(Client):
                                                             # Error encountered when specifying parameter names (multiple instaces)
                                                             # No 'self' is passed thru to parent Client()
 
-    def getBeeMovieScript(self):
-        print("Scrape here")
-
     def onMessage(self, author_id, message_object, thread_id, thread_type, **kwargs):
         self.markAsDelivered(thread_id, message_object.uid)
         self.markAsRead(thread_id)
@@ -29,9 +27,10 @@ class ResponseBot(Client):
                 self.send(Message(text = "Goodbye 👋"), thread_id=thread_id, thread_type=thread_type)
                 self.logout() # Brute force logout, Client keeps trying to reconnect
             elif self.flagScriptTrigger == False: # One time trigger 
-                self.flagScriptTrigger = True
-                for i in range(10):
-                    self.send(Message(text="This is an automated response: {}.".format(i)), thread_id=thread_id, thread_type=thread_type)
+                self.flagScriptTrigger = True # Set flag
+                beeScript = getBeeMovieScript().splitlines() # Get bee script, split into lines
+                for scriptLine in beeScript:
+                    self.send(Message(text=scriptLine), thread_id=thread_id, thread_type=thread_type)
 
 
 
