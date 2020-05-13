@@ -33,7 +33,6 @@ class ResponseBot(Client):
 
             # returns weather data
             elif message_object.text.lower()[0:7] == "weather": 
-                self.send(Message(text = message_object.text[8:]), thread_id=thread_id, thread_type=thread_type)
                 # get data
                 data = getWeatherData(message_object.text[8:])
                 # print data
@@ -54,8 +53,8 @@ class ResponseBot(Client):
                 for dayInfo in data["futureInfo"]:
                     self.send(
                         Message(text = 
-                            "="*30 + dayInfo["name"] + "="*30 + "\n"
-                            "Description:" + dayInfo["weather"] + "\n"
+                            "="*5+ dayInfo["name"] + "="*5 + "\n"
+                            "Description: " + dayInfo["weather"] + "\n"
                             "Max temperature: " + str(dayInfo['max_temp'] + "°C") + "\n"
                             "Min temperature: " + str(dayInfo['min_temp']+ "°C" )), 
                         thread_id=thread_id, 
@@ -107,7 +106,7 @@ for searchedUser in searchedUserList:
         )
         clientBarry.send(
             Message(text = 
-                "Type \'bye\' to exit, \'weather' + [location] for weather, or anything else to see the entire Bee Movie script!"),
+                "Type \'bye\' to exit, \'weather + [location]\' for weather, or anything else to see the entire Bee Movie script!"),
             thread_id=searchedUser.uid,
             thread_type=ThreadType.USER)
         
