@@ -23,18 +23,25 @@ class ResponseBot(Client):
 
         # Reponse to incoming message
         if author_id != self.uid:
-            if message_object.text.lower() == "bye": # Exit Condition
+            
+            # Exit Condition
+            if message_object.text.lower() == "bye": 
                 self.send(Message(text = "Goodbye 👋"), thread_id=thread_id, thread_type=thread_type)
-                self.logout() # Brute force logout, Client keeps trying to reconnect
-            elif self.flagScriptTrigger == False: # One time trigger 
-                self.flagScriptTrigger = True # Set flag
-                beeScript = getBeeMovieScript().splitlines() # Get bee script, split into lines
-                for scriptLine in beeScript:
+                # Brute force logout, Client keeps trying to reconnect
+                self.logout() 
+
+            # returns weather data
+            elif message_object.text.lower()[0:7] == "weather": 
+                self.send(Message(text = message_object.text[8:]), thread_id=thread_id, thread_type=thread_type)
+            
+            # One time trigger
+            elif self.flagScriptTrigger == False: 
+                # Set flag
+                self.flagScriptTrigger = True
+                # Get bee script, split into lines, and print
+                beeScript = getBeeMovieScript().splitlines() 
+                for scriptLine in beeScript: 
                     self.send(Message(text=scriptLine), thread_id=thread_id, thread_type=thread_type)
-
-
-
-
 
 
 # Get login credentials from file
@@ -56,6 +63,7 @@ searchedUserList = clientBarry.searchForUsers(searchName, limit = 5)
 
 for searchedUser in searchedUserList:
     # Print User Info
+    print("Name: ", searchedUser.name)
     print("ID: ", searchedUser.uid)
     print("Photo: ", searchedUser.photo)
     print("Is Friend: ", searchedUser.is_friend)
