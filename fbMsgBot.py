@@ -1,6 +1,7 @@
 from fbchat import Client, log
 from fbchat.models import Message, ThreadType
 from scriptScraper import getBeeMovieScript
+from weatherScraper import getWeatherData
 
 
 # Subclass of Client()
@@ -33,7 +34,33 @@ class ResponseBot(Client):
             # returns weather data
             elif message_object.text.lower()[0:7] == "weather": 
                 self.send(Message(text = message_object.text[8:]), thread_id=thread_id, thread_type=thread_type)
-            
+                # get data
+                data = getWeatherData(message_object.text[8:])
+                # print data
+                self.send(
+                    Message(text = 
+                        "Weather for: "+ data["region"] + "\n"
+                        "Now: " + data["dayhour"] + "\n"
+                        "Temperature now: "+ str(data['temp_now']) + "°C" + "\n"
+                        ), 
+                    thread_id=thread_id, 
+                    thread_type=thread_type)
+                self.send(Message(text = "Temperature now: "+ str(data['temp_now']) + "°C"), thread_id=thread_id, thread_type=thread_type)
+                self.send(Message(text = "Temperature now: "+ str(data['temp_now']) + "°C"), thread_id=thread_id, thread_type=thread_type)
+               
+                # print("Weather for:", data["region"])
+                # print("Now:", data["dayhour"])
+                # print(f"Temperature now: {data['temp_now']}°C")
+                # print("Description:", data['weather_now'])
+                # print("Precipitation:", data["precipitation"])
+                # print("Humidity:", data["humidity"])
+                # print("Wind:", data["wind"])
+                # print("Next days:")
+                # for dayweather in data["futureInfo"]:
+                #     print("="*40, dayweather["name"], "="*40)
+                #     print("Description:", dayweather["weather"])
+                #     print(f"Max temperature: {dayweather['max_temp']}°C")
+                #     print(f"Min temperature: {dayweather['min_temp']}°C")
             # One time trigger
             elif self.flagScriptTrigger == False: 
                 # Set flag
