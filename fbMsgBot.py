@@ -21,7 +21,7 @@ class ResponseBot(Client):
         self.markAsRead(thread_id)
 
         log.info("{} from {} in {}".format(message_object, thread_id, thread_type.name))
-
+        
         # Reponse to incoming message
         if author_id != self.uid:
             
@@ -42,25 +42,25 @@ class ResponseBot(Client):
                         "Weather for: "+ data["region"] + "\n"
                         "Now: " + data["dayhour"] + "\n"
                         "Temperature now: "+ str(data['temp_now']) + "°C" + "\n"
-                        ), 
+                        "Description: " + data['weather_now'] + "\n"
+                        "Precipitation: " + data["precipitation"] + "\n"
+                        "Humidity: " + data["humidity"] + "\n"
+                        "Wind: " + data["wind"]), 
                     thread_id=thread_id, 
                     thread_type=thread_type)
-                self.send(Message(text = "Temperature now: "+ str(data['temp_now']) + "°C"), thread_id=thread_id, thread_type=thread_type)
-                self.send(Message(text = "Temperature now: "+ str(data['temp_now']) + "°C"), thread_id=thread_id, thread_type=thread_type)
-               
-                # print("Weather for:", data["region"])
-                # print("Now:", data["dayhour"])
-                # print(f"Temperature now: {data['temp_now']}°C")
-                # print("Description:", data['weather_now'])
-                # print("Precipitation:", data["precipitation"])
-                # print("Humidity:", data["humidity"])
-                # print("Wind:", data["wind"])
-                # print("Next days:")
-                # for dayweather in data["futureInfo"]:
-                #     print("="*40, dayweather["name"], "="*40)
-                #     print("Description:", dayweather["weather"])
-                #     print(f"Max temperature: {dayweather['max_temp']}°C")
-                #     print(f"Min temperature: {dayweather['min_temp']}°C")
+                   
+                self.send(Message(text = "Next days: "), thread_id=thread_id, thread_type=thread_type)
+
+                for dayInfo in data["futureInfo"]:
+                    self.send(
+                        Message(text = 
+                            "="*30 + dayInfo["name"] + "="*30 + "\n"
+                            "Description:" + dayInfo["weather"] + "\n"
+                            "Max temperature: " + str(dayInfo['max_temp'] + "°C") + "\n"
+                            "Min temperature: " + str(dayInfo['min_temp']+ "°C" )), 
+                        thread_id=thread_id, 
+                        thread_type=thread_type)
+            
             # One time trigger
             elif self.flagScriptTrigger == False: 
                 # Set flag
@@ -105,6 +105,12 @@ for searchedUser in searchedUserList:
             thread_id = searchedUser.uid,
             thread_type= ThreadType.USER
         )
+        clientBarry.send(
+            Message(text = 
+                "Type \'bye\' to exit, \'weather' + [location] for weather, or anything else to see the entire Bee Movie script!"),
+            thread_id=searchedUser.uid,
+            thread_type=ThreadType.USER)
+        
 
         # Listen for inbound? message
         clientBarry.listen()
